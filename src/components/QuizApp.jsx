@@ -3,6 +3,7 @@ import '../styles/QuizApp.css'
 import QuestionCard from './QuestionCard'
 import ResultScreen from './ResultScreen'
 import HistoryScreen from './HistoryScreen'
+import countriesData from '../countries-data.json'
 
 const QuizApp = () => {
   const [countries, setCountries] = useState([])
@@ -17,21 +18,11 @@ const QuizApp = () => {
   const [currentView, setCurrentView] = useState('home')
 
   useEffect(() => {
-    fetchCountries()
+    // Dữ liệu quốc gia được bundle sẵn trong app (offline) thay vì gọi API runtime,
+    // vì restcountries.com đã deprecate v3.1 và chặn CORS từ trình duyệt.
+    setCountries(countriesData)
+    setIsLoading(false)
   }, [])
-
-  const fetchCountries = async () => {
-    try {
-      const fields = 'name,capital,region,area,population,currencies,languages'
-      const response = await fetch(`https://restcountries.com/v3.1/all?fields=${fields}`)
-      const data = await response.json()
-      setCountries(data)
-      setIsLoading(false)
-    } catch (error) {
-      console.error('Error fetching countries:', error)
-      setIsLoading(false)
-    }
-  }
 
   const generateQuestions = () => {
     if (countries.length === 0) return []
